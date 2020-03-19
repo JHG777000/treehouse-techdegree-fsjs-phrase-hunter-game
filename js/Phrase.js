@@ -7,7 +7,7 @@ class Phrase {
       this.phrase = phrase.toLowerCase();
     }
     addPhraseToDisplay() {
-      
+      alert(this.phrase);
     }
   }
   
