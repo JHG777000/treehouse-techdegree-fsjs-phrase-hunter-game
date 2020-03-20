@@ -15,6 +15,7 @@ class Game {
 
     this.activePhrase = this.getRandomPhrase();
     this.activePhrase.addPhraseToDisplay();
+    this.activePhrase.showMatchedLetter('!');
   }
   getRandomPhrase() {
     let phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
