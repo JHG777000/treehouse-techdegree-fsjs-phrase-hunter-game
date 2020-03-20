@@ -4,4 +4,10 @@
 
 game = new Game();
 
-game.startGame();
+const button = document.getElementById('btn__reset');
+button.addEventListener('click', () => game.startGame());
+
+const qwerty = document.getElementById('qwerty');
+qwerty.addEventListener('click', e => {
+  if (e.target.innerText.length === 1) game.handleInteraction(e);
+});

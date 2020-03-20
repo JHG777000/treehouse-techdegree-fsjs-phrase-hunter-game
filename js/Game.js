@@ -25,4 +25,25 @@ class Game {
     }
     return phrase;
   }
+  handleInteraction(e) {
+   if (e.target.className === 'key') {
+     if (this.activePhrase.checkLetter(e.target.innerText)) {
+        e.target.className = 'key chosen';
+        this.activePhrase.showMatchedLetter(e.target.innerText);
+        alert(this.checkForWin());
+     } else {
+        e.target.className = 'key wrong';
+     }
+   }
+  }
+  checkForWin() {
+      const ul = document.getElementsByTagName('ul')[0];
+      const list = ul.getElementsByTagName('li');
+
+      for (let i = 0; i < list.length; i++) {
+       if (list[i].className.includes('hide')) return false;
+      }
+      return true;
+  }
+
 }
