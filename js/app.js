@@ -11,3 +11,7 @@ const qwerty = document.getElementById('qwerty');
 qwerty.addEventListener('click', e => {
   if (e.target.innerText.length === 1) game.handleInteraction(e);
 });
+
+document.addEventListener('keydown', e => {
+  game.handleInteraction(e);
+});

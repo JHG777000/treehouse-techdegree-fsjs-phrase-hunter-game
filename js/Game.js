@@ -11,8 +11,6 @@ class Game {
   startGame() {
     const overlay = document.getElementById('overlay');
     overlay.style.display = 'none';
-    //overlay.style.display = '';
-
     this.activePhrase = this.getRandomPhrase();
     this.activePhrase.addPhraseToDisplay();
   }
@@ -34,7 +32,31 @@ class Game {
         e.target.className = 'key wrong';
         this.removeLife();
       }
+      return;
     }
+
+    const overlay = document.getElementById('overlay');
+    if (overlay.style.display === '') return;
+
+    const qwerty = document.getElementById('qwerty');
+    const keys = qwerty.getElementsByTagName('button');
+    let target = undefined;
+    for (let i = 0; i < keys.length; i++) {
+      let letter = e.code.toLowerCase()[e.code.length-1];
+      if (keys[i].innerText === letter) target = keys[i];
+    }
+    
+    if (target.className !== 'key') return;
+    
+    if (this.activePhrase.checkLetter(target.innerText)) {
+      target.className = 'key chosen';
+      this.activePhrase.showMatchedLetter(target.innerText);
+      if (this.checkForWin()) this.gameOver();
+    } else {
+      target.className = 'key wrong';
+      this.removeLife();
+    }
+
   }
   removeLife() {
     const ol = document.getElementsByTagName('ol')[0];
