@@ -84,8 +84,10 @@ class Game {
     const message = document.getElementById('game-over-message');
     if (this.checkForWin()) {
       message.innerText = 'Great! You Won!';
+      overlay.className = 'win';
     } else {
       message.innerText = 'Sorry, you lost.';
+      overlay.className = 'lose';
     }
     let main_div = document.getElementsByClassName('main-container')[0];
     const div = main_div.getElementsByTagName('div')[0];
