@@ -3,27 +3,38 @@
  * Game.js */
 
 class Game {
+  //Game's constructor, defines vars for use in class
   constructor() {
     this.missed = 0;
     this.phrases = [new Phrase('Hello World'), new Phrase('Hi')];
     this.activePhrase = null;
   }
+  //startGame method, starts the game by hidding the overlay, and
+  //setting the active phrase via this.getRandomPhrase()
   startGame() {
     const overlay = document.getElementById('overlay');
     overlay.style.display = 'none';
     this.activePhrase = this.getRandomPhrase();
     this.activePhrase.addPhraseToDisplay();
   }
+  //getRandomPhrase method, Randomly chooses hidden phrase. 
+  //Never chooses the same hidden phrase in a row.
   getRandomPhrase() {
     let phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
-    //loop until different from last color
+    //loop until different from last hidden phrase
     while (phrase === this.activePhrase) {
       phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
     }
     return phrase;
   }
+  //handleInteraction method, checks if the palyer selected a correct letter
+  //or not and responds accordingly
+  //if correct checkForWin
+  //if not correct removeLife
   handleInteraction(e) {
+    //see if event was triggered by the on screen keyboard
     if (e.target.className === 'key') {
+      //process event from the on screen keyboard
       if (this.activePhrase.checkLetter(e.target.innerText)) {
         e.target.className = 'key chosen';
         this.activePhrase.showMatchedLetter(e.target.innerText);
@@ -35,19 +46,32 @@ class Game {
       return;
     }
 
+    //start to process event from a real keyboard
+
+    //make sure game is active, the start overlay is hidden
     const overlay = document.getElementById('overlay');
     if (overlay.style.display === '') return;
 
+    //get on screen keyboard so on screen keys can be retrieved
+    //based on letter code from real keyboard
     const qwerty = document.getElementById('qwerty');
     const keys = qwerty.getElementsByTagName('button');
     let target = undefined;
+
+    //loop through all on screen keys, and retrieve match
     for (let i = 0; i < keys.length; i++) {
+      //make sure key code is valid, in the form of 'KeyA'
+      if ( !(e.code.length === 4 && e.code[0] === 'K') ) return;
+      //convert key code 'KeyA' to letter code 'a'
       let letter = e.code.toLowerCase()[e.code.length-1];
+      //match and retrieve on screen key, set to target
       if (keys[i].innerText === letter) target = keys[i];
     }
     
-    if (target.className !== 'key') return;
+    //if no match found return
+    if (target === undefined) return;
     
+    //process event from a real keyboard
     if (this.activePhrase.checkLetter(target.innerText)) {
       target.className = 'key chosen';
       this.activePhrase.showMatchedLetter(target.innerText);
@@ -57,7 +81,10 @@ class Game {
       this.removeLife();
     }
 
+
   }
+  //removeLife method, adds one to this.missed,
+  //and changes a heart from liveHeart to lostHeart
   removeLife() {
     const ol = document.getElementsByTagName('ol')[0];
     const hearts = ol.getElementsByTagName('li');
@@ -69,6 +96,8 @@ class Game {
       return;
     }
   }
+  //checkForWin method, reads the class name of Phrase letters,
+  //if no class name is hide, then win is true
   checkForWin() {
     const ul = document.getElementsByTagName('ul')[0];
     const list = ul.getElementsByTagName('li');
@@ -78,6 +107,10 @@ class Game {
     }
     return true;
   }
+  //gameOver method, unhides the overlay
+  //sets the overlay class based on if game was won or not
+  //and displays message based on if game was won or not
+  //resets the game so it can be played again
   gameOver() {
     const overlay = document.getElementById('overlay');
     overlay.style.display = '';

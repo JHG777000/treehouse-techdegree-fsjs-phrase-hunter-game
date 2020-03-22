@@ -3,9 +3,12 @@
  * Phrase.js */
 
 class Phrase {
+  //Phrase's constructor, defines vars for use in class
   constructor(phrase) {
     this.phrase = phrase.toLowerCase();
   }
+  //addPhraseToDisplay method, create an ul and div tag
+  //add li of phrase letters to ul
   addPhraseToDisplay() {
     let main_div = document.getElementsByClassName('main-container')[0];
     let div = document.createElement('div');
@@ -30,13 +33,14 @@ class Phrase {
     }
     main_div.prepend(div);
   }
-
+  //checkLetter method, is letter in phrase or not
   checkLetter(letter) {
     for (let i = 0; i < this.phrase.length; i++) {
       if (this.phrase.charAt(i) === letter) return true;
     }
     return false;
   }
+  //showMatchedLetter method, change class name to show a matched letter
   showMatchedLetter(letter) {
     let phrase_div = document.getElementById('phrase');
     let ul = phrase_div.getElementsByTagName('ul')[0];
