@@ -138,6 +138,7 @@ class Game {
     const keys = qwerty.getElementsByTagName('button');
     for (let i = 0; i < keys.length; i++) {
       keys[i].className = 'key';
+      keys[i].disabled = false;
     }
     const ol = document.getElementsByTagName('ol')[0];
     const hearts = ol.getElementsByTagName('li');
