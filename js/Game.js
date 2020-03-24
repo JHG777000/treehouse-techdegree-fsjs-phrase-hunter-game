@@ -6,7 +6,13 @@ class Game {
   //Game's constructor, defines vars for use in class
   constructor() {
     this.missed = 0;
-    this.phrases = [new Phrase('Hello World'), new Phrase('Hi')];
+    this.phrases = [
+      new Phrase('Hello World'),
+      new Phrase('Hi'),
+      new Phrase('The world is round'),
+      new Phrase('The sqrt of negative one is i'),
+      new Phrase('i to the power of two is negative one')
+    ];
     this.activePhrase = null;
   }
   //startGame method, starts the game by hidding the overlay, and
@@ -17,14 +23,27 @@ class Game {
     this.activePhrase = this.getRandomPhrase();
     this.activePhrase.addPhraseToDisplay();
   }
-  //getRandomPhrase method, Randomly chooses hidden phrase. 
+  //getRandomPhrase method, Randomly chooses hidden phrase.
   //Never chooses the same hidden phrase in a row.
   getRandomPhrase() {
     let phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
+    //get 'lastPhrase' if it already exists, if not make it
+    let lastPhrase = document
+      .getElementsByClassName('main-container')[0]
+      .getElementsByTagName('h5')[0];
+    if (lastPhrase === undefined) {
+      lastPhrase = document.createElement('h5');
+      lastPhrase.innerText = '';
+      lastPhrase.hidden = true;
+      document
+        .getElementsByClassName('main-container')[0]
+        .appendChild(lastPhrase);
+    }
     //loop until different from last hidden phrase
-    while (phrase === this.activePhrase) {
+    while (phrase.phrase === lastPhrase.innerText) {
       phrase = this.phrases[Math.floor(Math.random() * this.phrases.length)];
     }
+    lastPhrase.innerText = phrase.phrase;
     return phrase;
   }
   //handleInteraction method, checks if the palyer selected a correct letter
@@ -32,22 +51,6 @@ class Game {
   //if correct checkForWin
   //if not correct removeLife
   handleInteraction(e) {
-    //see if event was triggered by the on screen keyboard
-    if (e.target.className === 'key') {
-      //process event from the on screen keyboard
-      if (this.activePhrase.checkLetter(e.target.innerText)) {
-        e.target.className = 'key chosen';
-        this.activePhrase.showMatchedLetter(e.target.innerText);
-        if (this.checkForWin()) this.gameOver();
-      } else {
-        e.target.className = 'key wrong';
-        this.removeLife();
-      }
-      return;
-    }
-
-    //start to process event from a real keyboard
-
     //make sure game is active, the start overlay is hidden
     const overlay = document.getElementById('overlay');
     if (overlay.style.display === '') return;
@@ -57,21 +60,28 @@ class Game {
     const qwerty = document.getElementById('qwerty');
     const keys = qwerty.getElementsByTagName('button');
     let target = undefined;
-
-    //loop through all on screen keys, and retrieve match
-    for (let i = 0; i < keys.length; i++) {
-      //make sure key code is valid, in the form of 'KeyA'
-      if ( !(e.code.length === 4 && e.code[0] === 'K') ) return;
-      //convert key code 'KeyA' to letter code 'a'
-      let letter = e.code.toLowerCase()[e.code.length-1];
-      //match and retrieve on screen key, set to target
-      if (keys[i].innerText === letter) target = keys[i];
+    //see if event was triggered by the on screen keyboard or a
+    //real keyboard
+    if (e.target.className === 'key') {
+      //on screen keyboard, get keydown event target
+      target = e.target;
+    } else {
+      //loop through all on screen keys, and retrieve match
+      for (let i = 0; i < keys.length; i++) {
+        //make sure key code is valid, in the form of 'KeyA'
+        if (!(e.code.length === 4 && e.code[0] === 'K')) return;
+        //convert key code 'KeyA' to letter code 'a'
+        let letter = e.code.toLowerCase()[e.code.length - 1];
+        //match and retrieve on screen key, set to target
+        if (keys[i].innerText === letter) target = keys[i];
+      }
     }
-    
+
     //if no match found return
     if (target === undefined) return;
-    
-    //process event from a real keyboard
+    if (target.className !== 'key') return;
+
+    //process keyboard events
     if (this.activePhrase.checkLetter(target.innerText)) {
       target.className = 'key chosen';
       this.activePhrase.showMatchedLetter(target.innerText);
@@ -80,8 +90,7 @@ class Game {
       target.className = 'key wrong';
       this.removeLife();
     }
-
-
+    target.disabled = true;
   }
   //removeLife method, adds one to this.missed,
   //and changes a heart from liveHeart to lostHeart
