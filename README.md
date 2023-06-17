@@ -1,4 +1,4 @@
-# treehouse-techdegree-fsjs-project-4
+# treehouse-techdegree-fsjs-phrase-hunter-game
 
 PHRASE HUNTER game
 
